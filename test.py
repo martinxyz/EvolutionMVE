@@ -1,6 +1,6 @@
 import json
-import matplotlib.pyplot as plt
 import numpy as np
+import scipy.misc
 from tensorflow import keras
 from evolve import Catch
 model_from_json = keras.models.model_from_json
@@ -18,18 +18,16 @@ if __name__ == "__main__":
     # Define environment, game
     env = Catch(grid_size)
     c = 0
-    for e in range(10):
+    for e in range(30):
         loss = 0.
         env.reset()
         game_over = False
         # get initial input
         input_t = env.observe()
 
-        plt.imshow(input_t.reshape((grid_size,)*2),
-                   interpolation='none', cmap='gray')
-        plt.axis("off")
+        img = input_t.reshape((grid_size,)*2) * 255
         for n in range(5):
-            plt.savefig("%04d.png" % c)
+            scipy.misc.imsave("%04d.png" % c, img)
             c += 1
         while not game_over:
             input_tm1 = input_t
@@ -41,9 +39,7 @@ if __name__ == "__main__":
             # apply action, get rewards and new state
             input_t, reward, game_over = env.act(action)
 
-            plt.imshow(input_t.reshape((grid_size,)*2),
-                       interpolation='none', cmap='gray')
-            plt.axis("off")
+            img = input_t.reshape((grid_size,)*2)
             for n in range(5):
-                plt.savefig("%04d.png" % c)
+                scipy.misc.imsave("%04d.png" % c, img)
                 c += 1

@@ -13,7 +13,7 @@ python test.py
 
 2) Make gif
 ```bash
-ffmpeg -i %04d.png output.gif -vf fps=1
+ffmpeg -i %04d.png -s 100x100 -sws_flags neighbor output.gif
 ```
 
 ### Requirements
