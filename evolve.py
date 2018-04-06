@@ -149,7 +149,8 @@ if __name__ == "__main__":
 
         print("Epoch {:03d}/{:04d} | Win count {}".format(e, epoch-1, win_cnt))
              
-    # Save trained model weights and architecture, this will be used by the visualization code
-    model.save_weights("model.h5", overwrite=True)
-    with open("model.json", "w") as outfile:
-        json.dump(model.to_json(), outfile)
+        if e % 20 == 0:
+            # Save trained model weights and architecture, this will be used by the visualization code
+            model.save_weights("model.h5", overwrite=True)
+            with open("model.json", "w") as outfile:
+                json.dump(model.to_json(), outfile)
