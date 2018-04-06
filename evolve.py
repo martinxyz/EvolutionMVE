@@ -19,10 +19,13 @@ class Catch(object):
         state = self.state
         if action == 0:  # left
             action = -1
+            self.standing_still = 0
         elif action == 1:  # stay
             action = 0
+            self.standing_still = 1
         else:
             action = 1  # right
+            self.standing_still = 0
         f0, f1, basket = state[0]
         new_basket = min(max(1, basket + action), self.grid_size-1)
         f0 += 1
@@ -42,13 +45,12 @@ class Catch(object):
 
     def _get_reward(self):
         fruit_row, fruit_col, basket = self.state[0]
-        if fruit_row == self.grid_size-1:
-            if abs(fruit_col - basket) <= 1:
-                return 1
-            else:
-                return 0 
-        else:
-            return 0
+        r = self.standing_still * 0.001  # reward for not moving
+        if basket == 2:
+            r += 0.002  # reward for parking 1px away from left
+        if fruit_row == self.grid_size-1 and abs(fruit_col - basket) <= 1:
+            r += 1
+        return r
 
     def _is_over(self):
         if self.state[0, 0] == self.grid_size-1:
@@ -70,6 +72,7 @@ class Catch(object):
         n = np.random.randint(0, self.grid_size-1, size=1)
         m = np.random.randint(1, self.grid_size-2, size=1)
         self.state = np.asarray([0, n, m])[np.newaxis]
+        self.standing_still = 0
 
  
 def play_round(model, grid_size):
